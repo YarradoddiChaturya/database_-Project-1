@@ -3,7 +3,9 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const session = require("express-session");
 const db = require("./db");
+const authRoutes = require("./authRoutes");
 
 const app = express();
 
@@ -14,31 +16,38 @@ app.use(cors({
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.json({
-        message: "User Management Backend Running"
-    });
-});
+if (!process.env.SESSION_SECRET ||
+    process.env.SESSION_SECRET.length < 32) {
+    throw new Error("SESSION_SECRET must be at least 32 characters.");
+}
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false
+    }
+}));
 
 app.get("/api/health", async (req, res) => {
     try {
-        const [rows] = await db.execute("SELECT 1 AS connected");
-
-        res.json({
-            status: "success",
-            database: rows[0].connected === 1 ? "connected" : "unknown"
-        });
+        await db.execute("SELECT 1");
+        res.json({ status: "success", database: "connected" });
     } catch (error) {
-        console.error(error);
         res.status(500).json({
             status: "error",
-            message: "Database connection failed"
+            database: "disconnected"
         });
     }
 });
 
+app.use("/api", authRoutes);
+
 const PORT = process.env.PORT || 5050;
 
 app.listen(PORT, () => {
-    console.log(`Backend running on http://localhost:${PORT}`);
+    console.log(`Backend running at http://localhost:${PORT}`);
 });
