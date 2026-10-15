@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Search System</title>
+</head>
+<body>
+
+    <h1>User Management System</h1>
+    <h2>Search Registered Users</h2>
+
+    <label for="searchType">Search Type:</label>
+    <select id="searchType">
+        <option value="name">Search by Name</option>
+        <option value="userid">Search by User ID</option>
+        <option value="salary">Search by Salary</option>
+        <option value="age">Search by Age</option>
+        <option value="after">Registered After User</option>
+        <option value="never">Never Signed In</option>
+        <option value="same">Same Registration Day</option>
+        <option value="today">Registered Today</option>
+    </select>
+
+    <input id="value1" placeholder="First value">
+    <input id="value2" placeholder="Second value">
+
+    <button type="button" id="searchButton">
+        Search
+    </button>
+
+    <h3>Search Results</h3>
+
+    <table id="results" border="1">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Salary</th>
+                <th>Age</th>
+                <th>Registration Date</th>
+                <th>Last Sign-in</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script src="search.js"></script>
+</body>
+</html>
