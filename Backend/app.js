@@ -5,8 +5,7 @@ const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
 const db = require("./db");
-const authRoutes = require("./authRoutes");
-
+const searchRoutes = require("./searchRoutes");
 const app = express();
 
 app.use(cors({
@@ -44,8 +43,7 @@ app.get("/api/health", async (req, res) => {
     }
 });
 
-app.use("/api", authRoutes);
-
+app.use("/api", searchRoutes);
 const PORT = process.env.PORT || 5050;
 
 app.listen(PORT, () => {
