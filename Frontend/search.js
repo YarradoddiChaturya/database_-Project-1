@@ -1,58 +1,63 @@
-const searchType = document.getElementById("searchType");
-const value1 = document.getElementById("value1");
-const value2 = document.getElementById("value2");
-const searchButton = document.getElementById("searchButton");
-const resultsBody = document.querySelector("#results tbody");
-
-const searchOptions = {
-    name: ["First name", "Last name"],
-    userid: ["Username", null],
-    salary: ["Minimum salary", "Maximum salary"],
-    age: ["Minimum age", "Maximum age"],
-    after: ["Username", null],
-    never: [null, null],
-    same: ["Username", null],
-    today: [null, null]
-};
-
-function updateSearchInputs() {
-    const [first, second] = searchOptions[searchType.value];
-
-    value1.style.display = first ? "block" : "none";
-    value2.style.display = second ? "block" : "none";
-
-    value1.placeholder = first || "";
-    value2.placeholder = second || "";
-
-    value1.value = "";
-    value2.value = "";
-}
-
-function searchUsers() {
+async function searchUsers() {
     const type = searchType.value;
 
-    const searchData = {
+    const params = new URLSearchParams({
         type: type,
         value1: value1.value.trim(),
         value2: value2.value.trim()
-    };
-
-    console.log("Search request:", searchData);
+    });
 
     resultsBody.replaceChildren();
 
+    try {
+        const response = await fetch(
+            "http://localhost:5050/api/search?${params}",
+            { credentials: "include" }
+        );
+
+        const users = await response.json();
+
+        if (!response.ok) {
+            throw new Error(users.message || "Search failed.");
+        }
+
+        if (users.length === 0) {
+            showMessage("No matching users found.");
+            return;
+        }
+
+        users.forEach(user => {
+            const row = document.createElement("tr");
+
+            [
+                user.username,
+                user.firstname,
+                user.lastname,
+                user.salary,
+                user.age,
+                user.registerday,
+                user.signintime ?? "Never"
+            ].forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value ?? "";
+                row.appendChild(cell);
+            });
+
+            resultsBody.appendChild(row);
+        });
+
+    } catch (error) {
+        showMessage(error.message);
+    }
+}
+
+function showMessage(message) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
 
     cell.colSpan = 7;
-    cell.textContent =
-        "Search request prepared. Database integration is next.";
+    cell.textContent = message;
 
     row.appendChild(cell);
     resultsBody.appendChild(row);
 }
-
-searchType.addEventListener("change", updateSearchInputs);
-searchButton.addEventListener("click", searchUsers);
-
-updateSearchInputs();
