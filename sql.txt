@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS Users (
     signintime DATETIME DEFAULT NULL
 );
 
+
 -- 1. Search users by first and/or last name
 SELECT * FROM Users
 WHERE firstname LIKE '%John%'
@@ -52,4 +53,49 @@ WHERE registerday = (
 
 -- 8. Search users registered today
 SELECT * FROM Users
+=======
+-- 1. Search by first and/or last name
+SELECT username, firstname, lastname, salary, age, registerday, signintime
+FROM Users
+WHERE firstname LIKE '%John%'
+   OR lastname LIKE '%Smith%';
+
+-- 2. Search by User ID
+SELECT username, firstname, lastname, salary, age, registerday, signintime
+FROM Users
+WHERE username = 'john';
+
+-- 3. Search by salary range
+SELECT username, firstname, lastname, salary, age, registerday, signintime
+FROM Users
+WHERE salary BETWEEN 50000 AND 70000;
+
+-- 4. Search by age range
+SELECT username, firstname, lastname, salary, age, registerday, signintime
+FROM Users
+WHERE age BETWEEN 20 AND 30;
+
+-- 5. Users registered after a specified user
+SELECT username, firstname, lastname, salary, age, registerday, signintime
+FROM Users
+WHERE registerday > (
+    SELECT registerday FROM Users WHERE username = 'john'
+);
+
+-- 6. Users who have never signed in
+SELECT username, firstname, lastname, salary, age, registerday, signintime
+FROM Users
+WHERE signintime IS NULL;
+
+-- 7. Users registered on the same day as a specified user
+SELECT username, firstname, lastname, salary, age, registerday, signintime
+FROM Users
+WHERE registerday = (
+    SELECT registerday FROM Users WHERE username = 'john'
+);
+
+-- 8. Users registered today
+SELECT username, firstname, lastname, salary, age, registerday, signintime
+FROM Users
+
 WHERE registerday = CURDATE();
