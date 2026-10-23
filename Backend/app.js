@@ -45,8 +45,19 @@ app.get("/api/health", async (req, res) => {
 });
 
 app.use("/api", authRoutes);
-app.use("/api", searchRoutes);
-const PORT = process.env.PORT || 5050;
+
+// Require login before accessing search functions
+function requireLogin(req, res, next) {
+    if (!req.session || !req.session.username) {
+        return res.status(401).json({
+            message: "Unauthorized"
+        });
+    }
+
+    next();
+}
+
+app.use("/api", requireLogin, searchRoutes);const PORT = process.env.PORT || 5050;
 
 app.listen(PORT, () => {
     console.log(`Backend running at http://localhost:${PORT}`);
