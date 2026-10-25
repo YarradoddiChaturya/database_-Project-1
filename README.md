@@ -1,42 +1,94 @@
-\# User Management System
+## How to Install and Run the Project
 
+### Step 1: Set up XAMPP
 
+1. Open the XAMPP Control Panel.
+2. Start **Apache** and **MySQL**.
+3. Open phpMyAdmin: http://localhost/phpmyadmin
 
-Database Project 1
+### Step 2: Set up the database
 
+1. In phpMyAdmin, click **New**.
+2. Create a database named `web_app`.
+3. Select the `web_app` database.
+4. Click **Import**.
+5. Select `Database/schema.sql` from the project folder.
+6. Click **Import** or **Go** to execute the SQL statements.
 
+### Step 3: Configure the backend
 
-\## Technologies
+Open the `Backend` folder and create a file named `.env`.
 
-\- MySQL
+Add the following settings:
 
-\- Node.js
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=web_app
+PORT=5050
+SESSION_SECRET=REPLACE_WITH_A_UNIQUE_RANDOM_SECRET
+```
 
-\- Express.js
+Replace the session secret with a securely generated random value. Adjust the database username, password, and port if your local MySQL configuration differs.
 
-\- HTML, CSS, JavaScript
+### Step 4: Install backend dependencies
 
-\- XAMPP
+Open Command Prompt and navigate to the Backend folder:
 
+```bat
+cd C:\xampp\htdocs\database_-Project-1\Backend
+npm install
+```
 
+### Step 5: Start the backend
 
-\## Features
+From the Backend folder, run:
 
-\- User registration
+```bat
+node app.js
+```
 
-\- Secure user sign-in
+The Express server should start at:
 
-\- Search users by name and username
+http://localhost:5050
 
-\- Search users by salary and age
+To test the backend connection, visit:
 
-\- Search users by registration date
+http://localhost:5050/api/health
 
-\- Search users who never signed in
+**Note:** Opening `http://localhost:5050` directly may display `Cannot GET /`. This is expected because the Express backend provides API endpoints rather than a homepage.
 
+### Step 6: Open the webpages
 
+Make sure the project folder is located at:
 
-\## Team
+```text
+C:\xampp\htdocs\database_-Project-1
+```
 
-Two-member collaborative database project.
+**Registration:**
 
+http://localhost/database_-Project-1/Frontend/register.html
+
+Enter the required details and register a new account.
+
+**Login:**
+
+http://localhost/database_-Project-1/Frontend/login.html
+
+Enter the registered username and password to sign in.
+
+**Search:**
+
+http://localhost/database_-Project-1/Frontend/search.html
+
+After logging in, select a search option, enter the required values, and click Search.
+
+**Important:** The search API requires an authenticated login session. Searching without logging in returns an Unauthorized response.
+
+### Step 7: Review the SQL queries
+
+The `sql.txt` file contains the database schema and example SQL queries for the eight search operations.
+
+The actual search functionality is implemented in `Backend/searchRoutes.js`.
